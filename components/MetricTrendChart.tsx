@@ -31,11 +31,13 @@ export function colorDePeriodo(periodo: string, mesA: string, mesB: string) {
   return { fill: COLOR_OTROS, opacity: OPACIDAD_OTROS };
 }
 
-// Valor corto para poner encima de cada barra: 165400 -> "165,4k"
+// Valor corto para poner encima de cada barra: 165400 -> "165,4k".
+// Los valores menores a 1.000 se muestran con sus decimales reales (hasta 3),
+// para que un dato mal cargado en el Sheet (ej. 262,817 en vez de 262817) se note.
 const corto = (n: number) =>
   Math.abs(n) >= 1000
     ? `${(n / 1000).toLocaleString("es-CO", { maximumFractionDigits: 1 })}k`
-    : n.toLocaleString("es-CO", { maximumFractionDigits: 1 });
+    : n.toLocaleString("es-CO", { maximumFractionDigits: 3 });
 
 // Evolución de UNA métrica a lo largo de todos los periodos disponibles.
 // Los periodos del rango A → B (el que se elige en la barra COMPARAR) se resaltan.
@@ -115,7 +117,7 @@ export function MetricTrendChart({
               <Tooltip
                 cursor={{ fill: "rgba(255,255,255,0.06)" }}
                 labelFormatter={(_, payload) => payload?.[0]?.payload?.largo ?? ""}
-                formatter={(v: number) => [v.toLocaleString("es-CO", { maximumFractionDigits: 1 }), title]}
+                formatter={(v: number) => [v.toLocaleString("es-CO", { maximumFractionDigits: 3 }), title]}
                 contentStyle={{ background: "#0d0d0d", border: "1px solid #3a3a3a", borderRadius: 10 }}
                 labelStyle={{ color: "#f7f7f5", fontWeight: 600 }}
                 itemStyle={{ color: "#ffb23c" }}
