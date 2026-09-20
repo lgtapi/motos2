@@ -84,12 +84,12 @@ export function PlatformSection({
     <>
       <SectionHeading tag={tag} title={title} iconSrc={iconSrc} />
       {graficas && (
-        <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-paper/45 print:hidden">
+        <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-neutral-500 print:hidden">
           <span>Toca una métrica para ver su gráfica</span>
           <button
             type="button"
             onClick={() => setSeleccion(keys)}
-            className="rounded-full border border-line px-3 py-1 font-display font-semibold uppercase tracking-wide text-paper/70 hover:border-brand hover:text-brand"
+            className="rounded-full border border-line bg-asphalt-800 px-3.5 py-1 font-display text-xs font-semibold uppercase tracking-wide text-paper transition-colors hover:border-brand hover:text-brand"
           >
             Todas
           </button>
@@ -97,7 +97,7 @@ export function PlatformSection({
             <button
               type="button"
               onClick={() => setSeleccion([])}
-              className="rounded-full border border-line px-3 py-1 font-display font-semibold uppercase tracking-wide text-paper/70 hover:border-brand hover:text-brand"
+              className="rounded-full border border-line bg-asphalt-800 px-3.5 py-1 font-display text-xs font-semibold uppercase tracking-wide text-paper transition-colors hover:border-brand hover:text-brand"
             >
               Limpiar
             </button>
