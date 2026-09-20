@@ -283,10 +283,10 @@ export default function DashboardPage() {
           )}
 
           {/* Instagram */}
-          <PlatformSection tag="Instagram" title="Instagram" iconSrc="/icon-instagram.png" rows={instagram.data} mesA={mesA} mesB={mesB} />
+          <PlatformSection tag="Instagram" title="Instagram" iconSrc="/icon-instagram.png" rows={instagram.data} mesA={mesA} mesB={mesB} graficas />
 
           {/* Facebook */}
-          <PlatformSection tag="Facebook" title="Facebook" iconSrc="/icon-facebook.png" rows={facebook.data} mesA={mesA} mesB={mesB} />
+          <PlatformSection tag="Facebook" title="Facebook" iconSrc="/icon-facebook.png" rows={facebook.data} mesA={mesA} mesB={mesB} graficas />
           {formatosData.length > 0 && (
             <div className="mt-4">
               <CompareBarChart title="Visualizaciones por formato de contenido" data={formatosData} labelA={labelA} labelB={labelB} />
@@ -304,7 +304,7 @@ export default function DashboardPage() {
           <PlatformSection tag="Campañas FB" title="Campañas · Facebook" iconSrc="/icon-facebook.png" rows={campanas.data} mesA={mesA} mesB={mesB} dateField="Fecha" platformFilter="Facebook" />
 
           {/* TikTok */}
-          <PlatformSection tag="TikTok" title="TikTok" iconSrc="/icon-tiktok.png" rows={tiktok.data} mesA={mesA} mesB={mesB} />
+          <PlatformSection tag="TikTok" title="TikTok" iconSrc="/icon-tiktok.png" rows={tiktok.data} mesA={mesA} mesB={mesB} graficas />
 
           {/* WhatsApp */}
           <PlatformSection tag="WhatsApp" title="WhatsApp" iconSrc="/icon-whatsapp.png" rows={waHistorico.data} mesA={mesA} mesB={mesB} />

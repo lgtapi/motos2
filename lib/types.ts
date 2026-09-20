@@ -15,6 +15,20 @@ export function mesLabel(isoDate: string): string {
   return `${MESES_ES[m - 1]} ${y}`;
 }
 
+// "2026-07-01" -> "Jul 26" (para ejes de gráficas); trimestre y año quedan igual
+export function mesLabelCorto(key: string): string {
+  const m = /^(\d{4})-(\d{2})-\d{2}$/.exec(key);
+  if (!m) return mesLabel(key);
+  return `${MESES_ES[Number(m[2]) - 1].slice(0, 3)} ${m[1].slice(2)}`;
+}
+
+// Qué tipo de periodo es una clave: "2026-07-01" -> "mes", "2026-T3" -> "trimestre", "2026" -> "año"
+export function unidadPeriodo(key: string): "mes" | "trimestre" | "año" {
+  if (/^\d{4}-T[1-4]$/.test(key)) return "trimestre";
+  if (/^\d{4}$/.test(key)) return "año";
+  return "mes";
+}
+
 export function sortIsoDatesAsc(dates: string[]): string[] {
   return [...new Set(dates)].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
