@@ -14,6 +14,7 @@ import {
   sortIsoDatesAsc,
   sheetHasRealData,
 } from "@/lib/types";
+import { Vista, coberturaPeriodos, usePeriodo } from "@/lib/periodos";
 
 const POLL_MS = 30_000;
 
@@ -51,17 +52,34 @@ function useSheetTab<T = SheetRow[]>(tab: string) {
 }
 
 export default function DashboardPage() {
-  const redes = useSheetTab<RedesRow[]>("Redes_LookerStudio");
-  const instagram = useSheetTab<SheetRow[]>("Instagram_Historico");
-  const facebook = useSheetTab<SheetRow[]>("Facebook_Historico");
-  const tiktok = useSheetTab<SheetRow[]>("TikTok_Historico");
-  const fbFormatos = useSheetTab<SheetRow[]>("Facebook_Formatos");
-  const waHistorico = useSheetTab<SheetRow[]>("WhatsApp_Historico");
-  const waCanal = useSheetTab<SheetRow[]>("WhatsApp_Canal");
-  const waAsesor = useSheetTab<SheetRow[]>("WhatsApp_Asesor");
-  const webTrafico = useSheetTab<SheetRow[]>("Trafico_Web_Historico");
-  const leadsDetalle = useSheetTab<SheetRow[]>("Leads_Detalle");
-  const campanas = useSheetTab<SheetRow[]>("Campanas_Historico");
+  const [vista, setVista] = useState<Vista>("mensual");
+
+  const redesRaw = useSheetTab<RedesRow[]>("Redes_LookerStudio");
+  const instagramRaw = useSheetTab<SheetRow[]>("Instagram_Historico");
+  const facebookRaw = useSheetTab<SheetRow[]>("Facebook_Historico");
+  const tiktokRaw = useSheetTab<SheetRow[]>("TikTok_Historico");
+  const fbFormatosRaw = useSheetTab<SheetRow[]>("Facebook_Formatos");
+  const waHistoricoRaw = useSheetTab<SheetRow[]>("WhatsApp_Historico");
+  const waCanalRaw = useSheetTab<SheetRow[]>("WhatsApp_Canal");
+  const waAsesorRaw = useSheetTab<SheetRow[]>("WhatsApp_Asesor");
+  const webTraficoRaw = useSheetTab<SheetRow[]>("Trafico_Web_Historico");
+  const leadsDetalleRaw = useSheetTab<SheetRow[]>("Leads_Detalle");
+  const campanasRaw = useSheetTab<SheetRow[]>("Campanas_Historico");
+
+  // Cada pestaña se agrupa según la vista (mensual / trimestral / anual).
+  // Con "mensual" devuelve los datos tal cual, así que nada más cambia.
+  // Argumentos: (datos, columna de fecha, vista, columnas que identifican la fila, ¿son registros sueltos?)
+  const redes = { ...redesRaw, data: usePeriodo(redesRaw.data, "Mes", vista) as unknown as RedesRow[] | null };
+  const instagram = { ...instagramRaw, data: usePeriodo(instagramRaw.data, "Fecha", vista) };
+  const facebook = { ...facebookRaw, data: usePeriodo(facebookRaw.data, "Fecha", vista) };
+  const tiktok = { ...tiktokRaw, data: usePeriodo(tiktokRaw.data, "Fecha", vista) };
+  const fbFormatos = { ...fbFormatosRaw, data: usePeriodo(fbFormatosRaw.data, "Mes", vista, ["Formato", "Categoría"]) };
+  const waHistorico = { ...waHistoricoRaw, data: usePeriodo(waHistoricoRaw.data, "Fecha", vista) };
+  const waCanal = { ...waCanalRaw, data: usePeriodo(waCanalRaw.data, "Fecha", vista, ["Canal"]) };
+  const waAsesor = { ...waAsesorRaw, data: usePeriodo(waAsesorRaw.data, "Fecha", vista, ["Asesor"]) };
+  const webTrafico = { ...webTraficoRaw, data: usePeriodo(webTraficoRaw.data, "Fecha", vista) };
+  const leadsDetalle = { ...leadsDetalleRaw, data: usePeriodo(leadsDetalleRaw.data, "Mes", vista, [], true) };
+  const campanas = { ...campanasRaw, data: usePeriodo(campanasRaw.data, "Fecha", vista) };
 
   const months = useMemo(() => {
     if (!redes.data) return [];
@@ -70,6 +88,20 @@ export default function DashboardPage() {
 
   const [mesA, setMesA] = useState<string>("");
   const [mesB, setMesB] = useState<string>("");
+
+  // Al cambiar de vista se vacían A y B para que el efecto de abajo
+  // elija automáticamente los dos últimos periodos de esa vista.
+  function cambiarVista(v: Vista) {
+    setVista(v);
+    setMesA("");
+    setMesB("");
+  }
+
+  // Avisa si un trimestre/año está incompleto (faltan meses en el Sheet)
+  const notasPeriodos = useMemo(
+    () => coberturaPeriodos(redesRaw.data as unknown as SheetRow[] | null, "Mes", vista),
+    [redesRaw.data, vista]
+  );
 
   useEffect(() => {
     if (months.length >= 2 && (!mesA || !mesB)) {
@@ -230,7 +262,16 @@ export default function DashboardPage() {
       {!isLoading && !hasError && months.length > 0 && mesA && mesB && (
         <>
           <div className="mb-8">
-            <MonthSwitcher months={months} mesA={mesA} mesB={mesB} onChangeA={setMesA} onChangeB={setMesB} />
+            <MonthSwitcher
+              months={months}
+              mesA={mesA}
+              mesB={mesB}
+              onChangeA={setMesA}
+              onChangeB={setMesB}
+              vista={vista}
+              onChangeVista={cambiarVista}
+              notas={notasPeriodos}
+            />
           </div>
 
           {/* Comparativo general entre plataformas */}
