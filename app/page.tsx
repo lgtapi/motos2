@@ -5,6 +5,7 @@ import Image from "next/image";
 import { MonthSwitcher } from "@/components/MonthSwitcher";
 import { CompareBarChart } from "@/components/CompareBarChart";
 import { PlatformCompareChart } from "@/components/PlatformCompareChart";
+import { PlatformTimelineChart } from "@/components/PlatformTimelineChart";
 import { PlatformSection, SectionHeading } from "@/components/PlatformSection";
 import {
   RedesRow,
@@ -278,7 +279,7 @@ export default function DashboardPage() {
           {plataformasChartData.length > 0 && (
             <>
               <SectionHeading tag="General" title="Visualizaciones por plataforma" iconSrc="/logo.png" iconBg="bg-white" />
-              <PlatformCompareChart title="" data={plataformasChartData} labelA={labelA} labelB={labelB} />
+              <PlatformTimelineChart rows={redes.data ?? []} mesA={mesA} mesB={mesB} />
             </>
           )}
 
